@@ -23,17 +23,16 @@ const useDataApi = (initialUrl, initialData) => {
     isError: false,
     data: initialData,
   });
-  console.log(`useDataApi called`);
+
   useEffect(() => {
-    console.log("useEffect Called");
     let didCancel = false;
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" });
       try {
         const result = await axios(url);
-        console.log("FETCH FROM URl");
         if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+          const attributes = result.data.data.map(item => item.attributes);
+          dispatch({ type: "FETCH_SUCCESS", payload: attributes });
         }
       } catch (error) {
         if (!didCancel) {
@@ -46,8 +45,10 @@ const useDataApi = (initialUrl, initialData) => {
       didCancel = true;
     };
   }, [url]);
+
   return [state, setUrl];
 };
+
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_INIT":
@@ -90,9 +91,9 @@ const Products = (props) => {
   } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/products");
+  const [query, setQuery] = useState("http://localhost:1337/api/products");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/products",
+    "http://localhost:1337/api/products",
     {
       data: [],
     }
@@ -123,10 +124,10 @@ const Products = (props) => {
 
   let list = items.map((item, index) => {
     let n = index + 1049;
-    // let uhit = "http://picsum.photos/" + n;
+    let uhit = "http://picsum.photos/" + n;
     // note, source.unsplash is used here because it loads images faster than picsum.photos
     // it should functionally be the same as picsum.photos which is shown in the videos
-    let uhit = "https://source.unsplash.com/random/800x800/?img=" + n;
+    //let uhit = "https://source.unsplash.com/random/800x800/?img=" + n;
 
     return (
       <li key={index}>
@@ -207,9 +208,10 @@ const Products = (props) => {
       <Row>
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:1337/${query}`);
-            console.log(`Restock called on ${query}`);
             event.preventDefault();
+            restockProducts(`http://localhost:1337/api/${query}`);
+            console.log(`Restock called on ${query}`);
+            
           }}
         >
           <input
