@@ -10,4 +10,4 @@ Finally, the restock functionality will restock products when clicked.
 
 ## Usage:
 
-Download all files, and make sure to have node.js and node version manager installed. Run 'npm start' to view the login app in the browser
+Download all files, and make sure to have node.js and node version manager installed. Run 'npm start' to view the React app in the browser
